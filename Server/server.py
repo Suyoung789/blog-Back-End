@@ -11,4 +11,4 @@ if __name__ == '__main__':
     if 'SECRET_KEY' not in os.environ:
         print("SECRET_KEY is not existing")
 
-    app.run(host='0.0.0.0', port=80, debug=False)
+    app.run(**app.config['RUN_SETTING'])

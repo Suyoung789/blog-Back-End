@@ -16,7 +16,7 @@ class Config:
     }
 
     MONGODB_SETTINGS = {
-        'host': '54.180.79.49',
+        'host': None,
         'port': None,
         'username': None,
         'db': SERVICE_NAME_UPPER,
