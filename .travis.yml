@@ -1,0 +1,21 @@
+language: python
+python:
+  - "3.6.5"
+
+# command to install dependencies
+install: "pip install -r requirements.txt"
+
+before_script:
+  - cd Server
+
+#command to run unittests
+script: tests/__init__.py
+
+notifiations:
+  email:
+    recipients:
+      - rsy011203@gmail.com
+
+branches:
+  only:
+    - Back-End
