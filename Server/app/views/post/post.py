@@ -46,7 +46,8 @@ class Post(BaseResource):
             'content': postContent.content[:20],
             'title': postContent.title,
             'category': postContent.category.id,
-            'reaction': len(postContent.reaction)
+            'reaction': len(postContent.reaction),
+            'image': postContent.image_name[0] if postContent.image_name else None
         } for postContent in PostModel.objects(category=category).skip((page - 1) * 20).limit(20)])
 
 
