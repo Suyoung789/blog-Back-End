@@ -15,9 +15,8 @@ class Category(BaseResource):
         '''
 
         category_name = request.json['category_name']
-        category_id = request.json['category_id']
 
-        CategoryModel(name=category_name, id=category_id).save()
+        CategoryModel(name=category_name).save()
         return Response('', 201)
 
     def delete(self):
