@@ -8,7 +8,6 @@ class CategoryModel(Document):
         'collection': 'category_model'
     }
     name = StringField(required=True)
-    id = IntField(primary_key=True)
 
 
 class PostModel(Document):

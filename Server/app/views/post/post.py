@@ -21,7 +21,7 @@ class Post(BaseResource):
         content = request.form['content']
         title = request.form['title']
         images = request.files.getlist('files[]')
-        category_int = request.form['category']
+        category = request.form['category_name']
 
         names = []
         for image in images:
@@ -32,7 +32,7 @@ class Post(BaseResource):
             print(image_name)
             names.append(image_name)
 
-        category = CategoryModel.objects(id=category_int).first()
+        category = CategoryModel.objects(name=category).first()
         post = PostModel(title=title, content=content, category=category.id, image_name=names).save()
         return jsonify({'post_id': str(post.id)})
 
