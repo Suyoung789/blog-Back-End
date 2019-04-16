@@ -37,8 +37,18 @@ class Post(BaseResource):
         return jsonify({'post_id': str(post.id)})
 
     def get(self):
-        page = int(request.args['page'])
+        # page = int(request.args['page'])
         category = request.args['category']
+        if category == 'All':
+            return jsonify([{
+                'post_id': str(postContent.id),
+                'creation_time': str(postContent.creation_time),
+                'content': postContent.content[:20],
+                'title': postContent.title,
+                'category': postContent.category.id,
+                'reaction': len(postContent.reaction),
+                'image': postContent.image_name[0] if postContent.image_name else None
+            } for postContent in PostModel.objects()])
 
         return jsonify([{
             'post_id': str(postContent.id),
@@ -48,7 +58,8 @@ class Post(BaseResource):
             'category': postContent.category.id,
             'reaction': len(postContent.reaction),
             'image': postContent.image_name[0] if postContent.image_name else None
-        } for postContent in PostModel.objects(category=category).skip((page - 1) * 20).limit(20)])
+        } for postContent in PostModel.objects(category=category)])
+        # for postContent in PostModel.objects(category=category).skip((page - 1) * 20).limit(20)])
 
 
 @api.resource('/post/<post_id>')
