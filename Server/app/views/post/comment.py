@@ -11,7 +11,6 @@ api = Api(Blueprint(__name__, __name__))
 
 @api.resource('/post/<post_id>/comment')
 class Comment(BaseResource):
-    @jwt_required
     @json_required({'content': str})
     def post(self,  post_id):
 

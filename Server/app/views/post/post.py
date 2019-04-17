@@ -43,20 +43,22 @@ class Post(BaseResource):
             return jsonify([{
                 'post_id': str(postContent.id),
                 'creation_time': str(postContent.creation_time),
-                'content': postContent.content[:20],
+                'content': postContent.content[:50],
                 'title': postContent.title,
-                'category': postContent.category.id,
+                'category': str(postContent.category.name),
                 'reaction': len(postContent.reaction),
+                'commentCount': CommentModel.objects(post=postContent.id).count(),
                 'image': postContent.image_name[0] if postContent.image_name else None
             } for postContent in PostModel.objects()])
 
         return jsonify([{
             'post_id': str(postContent.id),
             'creation_time': str(postContent.creation_time),
-            'content': postContent.content[:20],
+            'content': postContent.content[:50],
             'title': postContent.title,
-            'category': postContent.category.id,
+            'category': str(postContent.category.name),
             'reaction': len(postContent.reaction),
+            'commentCount': CommentModel.objects(post=postContent.id).count(),
             'image': postContent.image_name[0] if postContent.image_name else None
         } for postContent in PostModel.objects(category=category)])
         # for postContent in PostModel.objects(category=category).skip((page - 1) * 20).limit(20)])
