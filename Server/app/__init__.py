@@ -1,4 +1,6 @@
-from flask import Flask
+import os
+
+from flask import Flask, current_app, send_from_directory
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flasgger import Swagger
@@ -6,10 +8,6 @@ from app.views import *
 from mongoengine import connect
 
 from config import Config
-
-
-def a():
-    return '', 200
 
 
 def create_app(*config_cls):
@@ -27,7 +25,8 @@ def create_app(*config_cls):
     JWTManager().init_app(app_)
     Router().init_app(app_)
     Swagger(template=app_.config['SWAGGER_TEMPLATE']).init_app(app_)
-    app_.add_url_rule('/', 'a', a)
+    # app_.add_url_rule('/', 'a', a)
+    # app_.add_url_rule('/static/img/<path>', 'serve_static', serve_static)
 
     connect(**app_.config['MONGODB_SETTINGS'])
 

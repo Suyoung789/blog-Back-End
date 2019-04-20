@@ -1,4 +1,4 @@
-from flask import Response, request, Blueprint, jsonify
+from flask import Response, request, Blueprint, jsonify, send_from_directory
 from flask_restful import Api
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from uuid import uuid4
@@ -9,6 +9,13 @@ from app.models.post import *
 from app.docs.post.post import UPLOAD_POST, POSTCONTENT
 
 api = Api(Blueprint(__name__, __name__))
+
+
+@api.resource('/<name>')
+class Img(BaseResource):
+    def get(self, name):
+        print(name)
+        return send_from_directory('/Users/suyoung/Documents/blog/blog-Back-End/Server/static/img', name)
 
 
 @api.resource('/post')
