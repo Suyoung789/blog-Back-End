@@ -22,11 +22,22 @@ class Category(BaseResource):
         CategoryModel(name=category_name).save()
         return Response('', 201)
 
-    def delete(self):
-
-        category_name = request.json['category_name']
+@api.resource('/category/<category_name>')
+class CategoryContent(BaseResource):
+    def delete(self, category_name):
+        print("asdf")
 
         category = CategoryModel.objects(name=category_name).first()
+        print("asdf")
 
         category.delete()
         return Response('', 200)
+
+@api.resource('/option')
+class Option(BaseResource):
+    def get(self):
+        name = []
+        category = CategoryModel.objects().all()
+        for i in range(len(category)):
+            name.append(category[i]['name'])
+        return name

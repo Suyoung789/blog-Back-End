@@ -15,7 +15,7 @@ api = Api(Blueprint(__name__, __name__))
 class Img(BaseResource):
     def get(self, name):
         print(name)
-        return send_from_directory('/Users/suyoung/Documents/blog/blog-Back-End/Server/static/img', name)
+        return send_from_directory('/root/blog-Back-End/Server/static/img', name)
 
 
 @api.resource('/post')
@@ -25,22 +25,11 @@ class Post(BaseResource):
         '''
         게시물 작성
         '''
-        content = request.form['content']
-        title = request.form['title']
-        images = request.files.getlist('files[]')
-        category = request.form['category_name']
-
-        names = []
-        for image in images:
-            extension = image.filename.split('.')[-1]
-            print(extension)
-            image_name = '{}.{}'.format(str(uuid4()), extension)
-            image.save('Server/static/img/{0}'.format(image_name))
-            print(image_name)
-            names.append(image_name)
-
+        content = request.json['content']
+        title = request.json['title']
+        category = request.json['category']
         category = CategoryModel.objects(name=category).first()
-        post = PostModel(title=title, content=content, category=category.id, image_name=names).save()
+        post = PostModel(title=title, content=content, category=category.id).save()
         return jsonify({'post_id': str(post.id)})
 
     def get(self):
@@ -67,8 +56,9 @@ class Post(BaseResource):
             'reaction': len(postContent.reaction),
             'commentCount': CommentModel.objects(post=postContent.id).count(),
             'image': postContent.image_name[0] if postContent.image_name else None
-        } for postContent in PostModel.objects(category=category)])
+        } for postContent in PostModel.objects(category=CategoryModel.objects(name=category).first())])
         # for postContent in PostModel.objects(category=category).skip((page - 1) * 20).limit(20)])
+
 
 
 @api.resource('/post/<post_id>')
@@ -79,6 +69,7 @@ class PostContent(BaseResource):
         게시물 상세 정보
         :return:
         """
+        print("asdf")
         post = PostModel.objects(id=post_id).first()
         if not post:
             return Response('', 204)
@@ -86,25 +77,13 @@ class PostContent(BaseResource):
         comments = CommentModel.objects(post=post)
 
         return jsonify({
-            'creation_time': str(post.creation_time),
-            'post_id': str(post.id),
-            'title': post.title,
-            'content': post.content,
-            'owner_name': post.owner.name,
-            'owner_id': str(post.owner.id),
-            'category': post.category.id,
-            'reaction': len(post.reaction),
-            'comments': [{
-                'author': comment.owner.name,
-                'creation_time': str(comment.creation_time),
-                'content': comment.content,
-                'comment_id': str(comment.id),
-                'reaction': len(comment.reaction)
-            } for comment in comments],
-            'images': [{
-                'image_name': image
-            } for image in post.image_name]
-        })
+	  'creation_time': str(post.creation_time),
+	  'title': post.title,
+	  'content': post.content,
+	  'category': post.category.name,
+	  'reaction': len(post.reaction),
+	  'images': post.image_name
+	})
 
     @jwt_required
     def delete(self, post_id: str) -> Response:

@@ -11,20 +11,30 @@ api = Api(Blueprint(__name__, __name__))
 
 @api.resource('/post/<post_id>/comment')
 class Comment(BaseResource):
-    @json_required({'content': str})
-    def post(self,  post_id):
+	@json_required({'content': str})
+	def post(self,  post_id):
 
-        post = PostModel.objects(id=post_id).first()
+        	post = PostModel.objects(id=post_id).first()
 
-        if not post:
-            return Response('post not exist', 204)
+        	if not post:
+            		return Response('post not exist', 204)
 
-        content = request.json['content']
+	        content = request.json['content']
 
-        comment = CommentModel(content=content, post=post).save()
+        	comment = CommentModel(content=content, post=post).save()
 
-        return jsonify({'comment_id': str(comment.id)})
+	        return jsonify({'comment_id': str(comment.id)})
+	def get(self, post_id):
 
+		post = PostModel.objects(id=post_id).first()
+	
+		return jsonify([{
+			'creation_time': str(comment.creation_time),
+			'content': comment.content,
+			'comment_id': str(comment.id),
+			'reaction': len(comment.reaction)
+			}for comment in CommentModel.objects(post=post)])
+ 
 
 @api.resource(('/post/<post_id>/comment/<comment_id>'))
 class CommentDetail(BaseResource):
